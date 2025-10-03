@@ -1,0 +1,126 @@
+Master Prompt for Drive to Learn Project
+
+Project Title: Drive to Learn – AI-Powered 3D Educational Driving Game
+
+Objective:
+Create a browser-based 3D driving game where players learn by answering AI-generated multiple-choice questions (MCQs) derived from their own study material. The game must combine education + entertainment, adapting difficulty as the learner progresses.
+
+🎮 Core Game Idea
+
+The player pastes text/study material into the website interface.
+
+The system uses Gemini API (or LLM) to automatically generate:
+
+Multiple-choice questions (MCQs) with 4 options.
+
+Explanations for the correct answers.
+
+Adaptive follow-up questions if the player struggles.
+
+The gameplay is a 3D driving game rendered in the browser:
+
+Option A = Straight road
+
+Option B = U-turn
+
+Option C = Left turn
+
+Option D = Right turn
+
+Player answers by steering the car into the road that corresponds to the correct answer.
+
+If the player answers correctly:
+
+Score increases, car gains speed, bonuses unlock.
+
+If the player answers incorrectly:
+
+Show correct answer + explanation.
+
+Apply penalty (slower speed, obstacles, time loss).
+
+🧠 AI Integration
+
+Gemini API: Generate questions, difficulty scaling, explanations.
+
+Adaptive AI:
+
+Track player accuracy.
+
+Adjust difficulty level, traffic density, obstacles, speed based on performance.
+
+Voice AI (optional):
+
+Speech recognition → player can ask for clarifications.
+
+Text-to-speech → AI explains answers in simple words.
+
+Generative AI for Graphics (optional):
+
+Use AI-generated billboards, signs, or environments for variety.
+
+🎨 Graphics & Gameplay
+
+Use Babylon.js (preferred) or Three.js for 3D rendering.
+
+Physics handled by Ammo.js / Cannon.js.
+
+Assets: GLTF/GLB realistic cars, roads, buildings, skyboxes.
+
+Environment progression:
+
+Early game: clear highway, easy questions.
+
+Mid game: more traffic, obstacles, medium questions.
+
+Late game: high-speed, heavy traffic, fog/night mode, hard questions.
+
+📊 Game Flow
+
+Start Screen → User inputs study material.
+
+AI Processing → Gemini generates questions.
+
+Gameplay Start → Easy questions, clear roads.
+
+Progression → As score increases, AI spawns traffic, increases speed, raises question difficulty.
+
+Checkpoints → At each question, player chooses answer by driving into the correct path.
+
+End of Game → Show performance summary:
+
+Accuracy %
+
+Time taken
+
+Weak areas
+
+Suggested topics for improvement
+
+🛠 Tech Stack
+
+Frontend: Babylon.js + React (for UI + rendering canvas)
+
+Backend: Node.js (Express) or Python (FastAPI)
+
+AI: Gemini API (question generation + explanations)
+
+Physics: Ammo.js / Cannon.js
+
+Database: Firebase / Supabase (store scores & progress)
+
+Deployment: Vercel (frontend), Render/Railway (backend)
+
+🚀 Extra Features (Optional)
+
+Multiplayer mode: Race against friends → whoever answers fastest wins.
+
+Leaderboards & Badges: Global ranking, gamified achievements.
+
+Study Mode: Slow driving with optional explanations at each checkpoint.
+
+Procedural Roads: AI generates unique tracks for each topic.
+
+✅ Instruction for AI / Developer Agent:
+
+You are to help me build Drive to Learn. Understand that this is a 3D educational driving game where the AI generates quizzes from user study material and the gameplay mechanic is answering by driving into roads linked to A, B, C, D choices. Implement the game loop, integrate Gemini API for question generation, and ensure adaptive difficulty with engaging graphics and physics. Use modern web technologies (Babylon.js, Node.js backend, Gemini API, Firebase/Supabase) and optimize for browser performance.

@@ -118,25 +118,25 @@ export default function EnvironmentProgressive() {
 
   return (
     <group>
-      {/* Ground/Grass */}
+      {/* Ground/Grass - Enhanced with PBR */}
       <mesh receiveShadow position={[0, -0.1, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[200, 200]} />
-        <meshLambertMaterial map={grassTexture} color={envSettings.groundColor} />
+        <planeGeometry args={[300, 300]} />
+        <meshStandardMaterial 
+          map={grassTexture} 
+          color={envSettings.groundColor}
+          roughness={0.9}
+          metalness={0}
+        />
       </mesh>
       
-      {/* Sky */}
+      {/* Sky - Enhanced with gradient effect */}
       <mesh position={[0, 50, 0]}>
-        <sphereGeometry args={[100, 16, 16]} />
-        <meshBasicMaterial color={envSettings.skyColor} side={THREE.BackSide} />
+        <sphereGeometry args={[150, 32, 32]} />
+        <meshBasicMaterial 
+          color={envSettings.skyColor} 
+          side={THREE.BackSide}
+        />
       </mesh>
-      
-      {/* Ambient and directional lighting */}
-      <ambientLight intensity={envSettings.ambientIntensity} />
-      <directionalLight 
-        position={[10, 10, 5]} 
-        intensity={envSettings.directionalIntensity}
-        castShadow
-      />
       
       {/* Night mode - add street lights */}
       {environmentMode === 'night' && (
@@ -182,28 +182,40 @@ export default function EnvironmentProgressive() {
         </>
       )}
       
-      {/* Trees */}
+      {/* Trees - Enhanced with better materials */}
       {trees.map((tree, i) => (
-        <group key={`tree-${i}`} position={[tree.x, 0, tree.z]}>
+        <group key={`tree-${i}`} position={[tree.x, 0, tree.z]} castShadow receiveShadow>
           {/* Tree trunk */}
-          <mesh position={[0, 2, 0]}>
-            <cylinderGeometry args={[0.3, 0.5, 4]} />
-            <meshLambertMaterial color="#8b4513" />
+          <mesh castShadow receiveShadow position={[0, 2, 0]}>
+            <cylinderGeometry args={[0.3, 0.5, 4, 8]} />
+            <meshStandardMaterial 
+              color="#8b4513"
+              roughness={0.8}
+              metalness={0}
+            />
           </mesh>
           {/* Tree leaves */}
-          <mesh position={[0, 5, 0]}>
-            <sphereGeometry args={[2, 8, 8]} />
-            <meshLambertMaterial color={environmentMode === 'night' ? '#1a4d2e' : '#228b22'} />
+          <mesh castShadow receiveShadow position={[0, 5, 0]}>
+            <sphereGeometry args={[2.5, 16, 16]} />
+            <meshStandardMaterial 
+              color={environmentMode === 'night' ? '#1a4d2e' : '#228b22'}
+              roughness={0.7}
+              metalness={0}
+            />
           </mesh>
         </group>
       ))}
       
-      {/* Buildings */}
+      {/* Buildings - Enhanced with PBR materials */}
       {buildings.map((building, i) => (
         <group key={`building-${i}`} position={[building.x, building.height / 2, building.z]}>
-          <mesh>
-            <boxGeometry args={[4, building.height, 6]} />
-            <meshLambertMaterial color={building.color} />
+          <mesh castShadow receiveShadow>
+            <boxGeometry args={[6, building.height, 8]} />
+            <meshStandardMaterial 
+              color={building.color}
+              roughness={0.6}
+              metalness={0.2}
+            />
           </mesh>
           
           {/* Building windows (night mode) */}
@@ -238,17 +250,28 @@ export default function EnvironmentProgressive() {
         </group>
       ))}
       
-      {/* Traffic Obstacles */}
+      {/* Traffic Obstacles - Enhanced */}
       {obstacles.map((pos, i) => (
         <group key={`obstacle-${i}`} position={pos}>
           {/* Traffic Cone */}
-          <mesh>
-            <coneGeometry args={[0.3, 1, 8]} />
-            <meshLambertMaterial color="#ff6600" />
+          <mesh castShadow receiveShadow>
+            <coneGeometry args={[0.4, 1.2, 16]} />
+            <meshStandardMaterial 
+              color="#ff6600"
+              emissive="#ff3300"
+              emissiveIntensity={0.2}
+              roughness={0.3}
+              metalness={0.1}
+            />
           </mesh>
-          <mesh position={[0, 0.3, 0]}>
-            <ringGeometry args={[0.2, 0.35, 8]} />
-            <meshLambertMaterial color="#ffffff" />
+          <mesh position={[0, 0.4, 0]}>
+            <ringGeometry args={[0.25, 0.45, 16]} />
+            <meshStandardMaterial 
+              color="#ffffff"
+              emissive="#ffffff"
+              emissiveIntensity={0.3}
+              roughness={0.2}
+            />
           </mesh>
         </group>
       ))}
