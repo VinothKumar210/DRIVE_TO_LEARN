@@ -5,7 +5,7 @@ import * as THREE from 'three';
 
 import CarWithPhysics from './CarWithPhysics';
 import Road from './Road';
-import Environment from './Environment';
+import EnvironmentProgressive from './EnvironmentProgressive';
 import RoadSigns from './RoadSigns';
 import GameUI from './GameUI';
 import QuestionDisplay from './QuestionDisplay';
@@ -30,7 +30,7 @@ export default function Game() {
       <group>
         <ambientLight intensity={0.6} />
         <directionalLight position={[10, 10, 5]} intensity={1} />
-        <Environment />
+        <EnvironmentProgressive />
         
         {/* Loading text */}
         <mesh position={[0, 5, 0]}>
@@ -58,11 +58,17 @@ export default function Game() {
         shadow-camera-bottom={-10}
       />
       
-      {/* Fog for depth */}
-      <fog attach="fog" args={['#87CEEB', 20, 100]} />
+      {/* Fog for depth - color changes with environment */}
+      <fog attach="fog" args={[
+        stats.score >= 500 || stats.level >= 5 ? '#1a1a2e' : 
+        stats.score >= 250 || stats.level >= 3 ? '#B0C4DE' : 
+        '#87CEEB', 
+        20, 
+        100
+      ]} />
       
       {/* Game World */}
-      <Environment />
+      <EnvironmentProgressive />
       <Road />
       <CarWithPhysics />
       <RoadSigns />
