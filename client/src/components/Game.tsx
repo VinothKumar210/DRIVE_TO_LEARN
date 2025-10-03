@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 
-import Car from './Car';
+import CarWithPhysics from './CarWithPhysics';
 import Road from './Road';
 import Environment from './Environment';
 import RoadSigns from './RoadSigns';
@@ -64,7 +64,7 @@ export default function Game() {
       {/* Game World */}
       <Environment />
       <Road />
-      <Car />
+      <CarWithPhysics />
       <RoadSigns />
       
       {/* UI Overlays */}
