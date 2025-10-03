@@ -23,7 +23,8 @@ export default function Game() {
         sunIntensity: 0.3,
         ambientIntensity: 0.2,
         hemisphereIntensity: 0.3,
-        bloomIntensity: 1.5
+        bloomIntensity: 1.5,
+        shadowMapSize: 2048
       };
     } else if (stats.score >= 250 || stats.level >= 3) {
       return {
@@ -31,7 +32,8 @@ export default function Game() {
         sunIntensity: 0.8,
         ambientIntensity: 0.5,
         hemisphereIntensity: 0.6,
-        bloomIntensity: 0.8
+        bloomIntensity: 0.8,
+        shadowMapSize: 2048
       };
     } else {
       return {
@@ -39,7 +41,8 @@ export default function Game() {
         sunIntensity: 1.2,
         ambientIntensity: 0.4,
         hemisphereIntensity: 0.8,
-        bloomIntensity: 0.5
+        bloomIntensity: 0.5,
+        shadowMapSize: 2048
       };
     }
   }, [stats.score, stats.level]);
@@ -86,13 +89,13 @@ export default function Game() {
         intensity={lightingConfig.sunIntensity}
         color={lightingConfig.sunColor}
         castShadow
-        shadow-mapSize-width={4096}
-        shadow-mapSize-height={4096}
-        shadow-camera-far={200}
-        shadow-camera-left={-50}
-        shadow-camera-right={50}
-        shadow-camera-top={50}
-        shadow-camera-bottom={-50}
+        shadow-mapSize-width={lightingConfig.shadowMapSize}
+        shadow-mapSize-height={lightingConfig.shadowMapSize}
+        shadow-camera-far={150}
+        shadow-camera-left={-40}
+        shadow-camera-right={40}
+        shadow-camera-top={40}
+        shadow-camera-bottom={-40}
         shadow-bias={-0.0001}
       />
       
@@ -122,19 +125,14 @@ export default function Game() {
       {/* Post-processing Effects for Cinematic Quality */}
       <EffectComposer>
         <Bloom 
-          intensity={lightingConfig.bloomIntensity}
-          luminanceThreshold={0.6}
+          intensity={lightingConfig.bloomIntensity * 0.6}
+          luminanceThreshold={0.7}
           luminanceSmoothing={0.9}
           height={300}
         />
-        <DepthOfField 
-          focusDistance={0.02}
-          focalLength={0.05}
-          bokehScale={3}
-        />
         <Vignette 
-          offset={0.3}
-          darkness={0.5}
+          offset={0.5}
+          darkness={0.3}
         />
       </EffectComposer>
       
