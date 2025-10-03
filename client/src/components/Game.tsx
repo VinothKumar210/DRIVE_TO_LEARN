@@ -7,15 +7,11 @@ import CarWithPhysics from './CarWithPhysics';
 import Road from './Road';
 import EnvironmentProgressive from './EnvironmentProgressive';
 import RoadSigns from './RoadSigns';
-import GameUI from './GameUI';
-import QuestionDisplay from './QuestionDisplay';
 
 import { useGameStore } from '@/lib/stores/useGameStore';
-import { useQuestionStore } from '@/lib/stores/useQuestionStore';
 
 export default function Game() {
   const { stats, gamePhase } = useGameStore();
-  const { currentQuestion } = useQuestionStore();
 
   // Camera follow system
   useFrame((state) => {
@@ -72,10 +68,6 @@ export default function Game() {
       <Road />
       <CarWithPhysics />
       <RoadSigns />
-      
-      {/* UI Overlays */}
-      <GameUI />
-      <QuestionDisplay />
       
       {/* Debug controls (remove in production) */}
       {/* <OrbitControls enablePan={false} maxPolarAngle={Math.PI / 2} /> */}

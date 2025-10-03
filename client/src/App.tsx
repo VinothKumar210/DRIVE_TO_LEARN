@@ -8,6 +8,8 @@ import "./index.css";
 import Game from "./components/Game";
 import StudyMaterialInput from "./components/StudyMaterialInput";
 import GameResults from "./components/GameResults";
+import GameUI from "./components/GameUI";
+import QuestionDisplay from "./components/QuestionDisplay";
 import { useGameStore } from "./lib/stores/useGameStore";
 
 // Define control keys for the driving game
@@ -40,27 +42,37 @@ function App() {
         {gamePhase === 'results' && <GameResults />}
         
         {(gamePhase === 'playing' || gamePhase === 'loading') && (
-          <KeyboardControls map={controls}>
-            <Canvas
-              shadows
-              camera={{
-                position: [0, 8, 12],
-                fov: 60,
-                near: 0.1,
-                far: 1000
-              }}
-              gl={{
-                antialias: true,
-                powerPreference: "high-performance"
-              }}
-            >
-              <color attach="background" args={["#87CEEB"]} />
-              
-              <Suspense fallback={null}>
-                <Game />
-              </Suspense>
-            </Canvas>
-          </KeyboardControls>
+          <>
+            <KeyboardControls map={controls}>
+              <Canvas
+                shadows
+                camera={{
+                  position: [0, 8, 12],
+                  fov: 60,
+                  near: 0.1,
+                  far: 1000
+                }}
+                gl={{
+                  antialias: true,
+                  powerPreference: "high-performance"
+                }}
+              >
+                <color attach="background" args={["#87CEEB"]} />
+                
+                <Suspense fallback={null}>
+                  <Game />
+                </Suspense>
+              </Canvas>
+            </KeyboardControls>
+            
+            {/* HTML UI Overlays */}
+            {gamePhase === 'playing' && (
+              <>
+                <GameUI />
+                <QuestionDisplay />
+              </>
+            )}
+          </>
         )}
       </div>
     </QueryClientProvider>
