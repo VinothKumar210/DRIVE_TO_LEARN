@@ -39,27 +39,27 @@ export default function StudyMaterialInput() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <Card className="w-full max-w-2xl shadow-2xl">
-        <CardHeader className="text-center space-y-4">
+    <div className="h-full w-full bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col">
+      <div className="flex-1 flex flex-col p-8 max-w-7xl mx-auto w-full">
+        <div className="text-center space-y-4 mb-8">
           <div className="flex justify-center">
             <div className="bg-blue-500 p-3 rounded-full">
               <BookOpen className="h-8 w-8 text-white" />
             </div>
           </div>
-          <CardTitle className="text-3xl font-bold text-gray-800">
+          <h1 className="text-4xl font-bold text-gray-800">
             Drive to Learn
-          </CardTitle>
-          <p className="text-gray-600 text-lg">
+          </h1>
+          <p className="text-gray-600 text-xl">
             AI-Powered 3D Educational Driving Game
           </p>
           <p className="text-sm text-gray-500">
             Paste your study material below and we'll generate questions for you to answer while driving!
           </p>
-        </CardHeader>
+        </div>
         
-        <CardContent className="space-y-6">
-          <div>
+        <div className="flex-1 flex flex-col space-y-6 bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
+          <div className="flex-1 flex flex-col">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Study Material
             </label>
@@ -67,7 +67,7 @@ export default function StudyMaterialInput() {
               value={material}
               onChange={(e) => setMaterial(e.target.value)}
               placeholder="Paste your study notes, textbook content, or any educational material here. The AI will generate multiple-choice questions from this content..."
-              className="min-h-[200px] text-sm"
+              className="flex-1 text-sm resize-none"
               disabled={isLoading}
             />
           </div>
@@ -99,8 +99,8 @@ export default function StudyMaterialInput() {
               'Start Learning Drive'
             )}
           </Button>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
