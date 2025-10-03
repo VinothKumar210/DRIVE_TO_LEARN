@@ -1,83 +1,29 @@
-interface GeminiResponse {
-  candidates: {
-    content: {
-      parts: {
-        text: string;
-      }[];
-    };
-  }[];
-}
-
 export async function generateQuestions(studyMaterial: string, difficulty: string = 'medium'): Promise<any[]> {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || 'fallback_key';
-  
-  const prompt = `
-Generate 10 multiple-choice questions from the following study material. 
-Make the questions ${difficulty} difficulty level.
-
-Study Material:
-${studyMaterial}
-
-Format your response as a JSON array where each question has:
-- id: unique string
-- question: the question text
-- options: array of exactly 4 answer choices [A, B, C, D]
-- correctAnswer: index (0-3) of the correct answer
-- explanation: brief explanation of why the answer is correct
-- difficulty: "${difficulty}"
-
-Example format:
-[
-  {
-    "id": "q1",
-    "question": "What is the main concept discussed?",
-    "options": ["Option A", "Option B", "Option C", "Option D"],
-    "correctAnswer": 1,
-    "explanation": "Option B is correct because...",
-    "difficulty": "${difficulty}"
-  }
-]
-
-Return only the JSON array, no additional text.
-`;
-
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
+    const response = await fetch('/api/questions/generate', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: prompt
-          }]
-        }]
+        studyMaterial,
+        difficulty
       })
     });
 
     if (!response.ok) {
-      console.error('Gemini API error:', response.status);
+      console.error('Server error generating questions:', response.status);
       return generateFallbackQuestions(studyMaterial);
     }
 
-    const data: GeminiResponse = await response.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    const data = await response.json();
     
-    if (!text) {
-      console.error('No text in Gemini response');
-      return generateFallbackQuestions(studyMaterial);
+    if (data.questions && Array.isArray(data.questions)) {
+      return data.questions;
     }
-
-    // Clean the response to extract JSON
-    const jsonMatch = text.match(/\[[\s\S]*\]/);
-    if (!jsonMatch) {
-      console.error('No JSON found in response');
-      return generateFallbackQuestions(studyMaterial);
-    }
-
-    const questions = JSON.parse(jsonMatch[0]);
-    return Array.isArray(questions) ? questions : generateFallbackQuestions(studyMaterial);
+    
+    console.error('Invalid response format from server');
+    return generateFallbackQuestions(studyMaterial);
     
   } catch (error) {
     console.error('Error generating questions:', error);
