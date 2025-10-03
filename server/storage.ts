@@ -1,4 +1,14 @@
+import { drizzle } from "drizzle-orm/neon-serverless";
+import { Pool, neonConfig } from "@neondatabase/serverless";
+import ws from "ws";
 import { users, type User, type InsertUser } from "@shared/schema";
+
+// Configure WebSocket for Neon
+neonConfig.webSocketConstructor = ws;
+
+// Initialize database connection
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+export const db = drizzle(pool);
 
 // modify the interface with any CRUD methods
 // you might need
