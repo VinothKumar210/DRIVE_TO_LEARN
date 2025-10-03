@@ -25,10 +25,13 @@ export default function CarWithPhysics() {
   const carBodyRef = useRef<CANNON.Body | null>(null);
   const wheelBodiesRef = useRef<CANNON.Body[]>([]);
 
-  // Physics constants
-  const maxSteerVal = 0.5;
-  const maxForce = 1500;
-  const brakeForce = 100;
+  // Racing game physics constants
+  const maxSteerVal = 0.8;
+  const acceleration = 2500;
+  const reverseAcceleration = 1200;
+  const brakeForce = 0.85;
+  const driftFactor = 0.92;
+  const steeringResponse = 0.08;
   
   useEffect(() => {
     // Initialize Cannon.js physics world
@@ -84,37 +87,63 @@ export default function CarWithPhysics() {
     const controls = get();
     const carBody = carBodyRef.current;
 
-    // Apply forces based on controls
+    // Get forward and right vectors based on car rotation
     const forwardVector = new CANNON.Vec3(0, 0, -1);
+    const rightVector = new CANNON.Vec3(1, 0, 0);
     carBody.quaternion.vmult(forwardVector, forwardVector);
+    carBody.quaternion.vmult(rightVector, rightVector);
 
+    const currentSpeed = carBody.velocity.length();
+    const maxSpeed = 18 + stats.level * 2;
+
+    // Smooth acceleration with curves (like racing games)
     if (controls.forward) {
-      carBody.applyForce(forwardVector.scale(maxForce), carBody.position);
+      const accelForce = acceleration * (1 - currentSpeed / maxSpeed);
+      carBody.applyForce(forwardVector.scale(accelForce), carBody.position);
     }
+    
+    // Reverse with lower max speed
     if (controls.backward) {
-      const reverseForce = forwardVector.clone().scale(-maxForce * 0.5);
-      carBody.applyForce(reverseForce, carBody.position);
+      if (currentSpeed < 2) {
+        const reverseForce = forwardVector.clone().scale(-reverseAcceleration);
+        carBody.applyForce(reverseForce, carBody.position);
+      } else {
+        // Act as brake when moving forward
+        carBody.velocity.x *= brakeForce;
+        carBody.velocity.z *= brakeForce;
+      }
     }
+    
+    // Dedicated brake
     if (controls.brake) {
-      carBody.velocity.x *= 0.9;
-      carBody.velocity.z *= 0.9;
+      carBody.velocity.x *= brakeForce;
+      carBody.velocity.z *= brakeForce;
     }
 
-    // Apply steering (rotation around Y axis)
-    if (controls.left && carBody.velocity.length() > 0.5) {
-      carBody.angularVelocity.y = maxSteerVal;
-    } else if (controls.right && carBody.velocity.length() > 0.5) {
-      carBody.angularVelocity.y = -maxSteerVal;
+    // Speed-dependent steering (slower at high speeds, more responsive at low speeds)
+    const steeringSensitivity = Math.max(0.3, 1 - currentSpeed / maxSpeed);
+    const targetSteer = controls.left ? maxSteerVal * steeringSensitivity : 
+                        controls.right ? -maxSteerVal * steeringSensitivity : 0;
+    
+    // Only steer when moving
+    if (currentSpeed > 0.5) {
+      // Smooth steering interpolation
+      carBody.angularVelocity.y += (targetSteer - carBody.angularVelocity.y) * steeringResponse;
     } else {
-      carBody.angularVelocity.y *= 0.95;
+      carBody.angularVelocity.y *= 0.9;
     }
 
-    // Apply air resistance
-    carBody.velocity.scale(0.99, carBody.velocity);
+    // Drift/lateral friction for better handling
+    const lateralVelocity = new CANNON.Vec3();
+    rightVector.scale(carBody.velocity.dot(rightVector), lateralVelocity);
+    carBody.velocity.x -= lateralVelocity.x * (1 - driftFactor);
+    carBody.velocity.z -= lateralVelocity.z * (1 - driftFactor);
+    
+    // Natural deceleration (friction)
+    carBody.velocity.scale(0.985, carBody.velocity);
     
     // Limit max speed
-    const maxSpeed = 15 + stats.level * 2;
-    if (carBody.velocity.length() > maxSpeed) {
+    if (currentSpeed > maxSpeed) {
       carBody.velocity.normalize();
       carBody.velocity.scale(maxSpeed, carBody.velocity);
     }
@@ -127,8 +156,7 @@ export default function CarWithPhysics() {
     carRef.current.quaternion.copy(carBody.quaternion as any);
 
     // Update game stats
-    const speed = carBody.velocity.length();
-    updateSpeed(speed);
+    updateSpeed(currentSpeed);
     
     // Check for answer selection based on position/rotation
     if (currentQuestion && !selectedAnswer) {
@@ -195,7 +223,7 @@ export default function CarWithPhysics() {
   };
 
   return (
-    <group ref={carRef} position={[0, 1, 0]}>
+    <group ref={carRef} name="player-car" position={[0, 1, 0]}>
       {/* Car Body - Enhanced with PBR materials */}
       <mesh castShadow receiveShadow position={[0, 0.3, 0]}>
         <boxGeometry args={[1.6, 0.7, 3.2]} />

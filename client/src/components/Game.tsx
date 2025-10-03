@@ -47,12 +47,40 @@ export default function Game() {
     }
   }, [stats.score, stats.level]);
 
-  // Camera follow system
+  // Racing game camera follow system
   useFrame((state) => {
-    // Smooth camera follow
-    const targetPosition = new THREE.Vector3(0, 8, 12 + stats.speed * 0.1);
-    state.camera.position.lerp(targetPosition, 0.05);
-    state.camera.lookAt(0, 0, 0);
+    // Find the car in the scene
+    const car = state.scene.getObjectByName('player-car');
+    if (!car) return;
+    
+    // Dynamic camera position based on speed (like racing games)
+    const speedFactor = Math.min(stats.speed / 20, 1);
+    const cameraDistance = 12 + speedFactor * 4;
+    const cameraHeight = 8 + speedFactor * 2;
+    
+    // Get car's forward vector from its rotation
+    const carForward = new THREE.Vector3(0, 0, -1);
+    carForward.applyQuaternion(car.quaternion);
+    
+    // Camera position: behind the car (opposite of forward direction)
+    const cameraOffset = carForward.clone().multiplyScalar(-cameraDistance);
+    const targetPosition = new THREE.Vector3(
+      car.position.x + cameraOffset.x,
+      car.position.y + cameraHeight,
+      car.position.z + cameraOffset.z
+    );
+    
+    // Look at point: slightly ahead of the car when moving fast
+    const lookAheadOffset = carForward.clone().multiplyScalar(speedFactor * 3);
+    const targetLookAt = new THREE.Vector3(
+      car.position.x + lookAheadOffset.x,
+      car.position.y + 1,
+      car.position.z + lookAheadOffset.z
+    );
+    
+    // Smooth camera movement
+    state.camera.position.lerp(targetPosition, 0.1);
+    state.camera.lookAt(targetLookAt);
   });
 
   if (gamePhase === 'loading') {
