@@ -8,6 +8,7 @@ import CarWithPhysics from './CarWithPhysics';
 import Road from './Road';
 import EnvironmentProgressive from './EnvironmentProgressive';
 import RoadSigns from './RoadSigns';
+import Traffic from './Traffic';
 
 import { useGameStore } from '@/lib/stores/useGameStore';
 
@@ -115,6 +116,7 @@ export default function Game() {
       <EnvironmentProgressive />
       <Road />
       <CarWithPhysics />
+      <Traffic />
       <RoadSigns />
       
       {/* Post-processing Effects for Cinematic Quality */}

@@ -196,40 +196,103 @@ export default function CarWithPhysics() {
 
   return (
     <group ref={carRef} position={[0, 1, 0]}>
-      {/* Car Body */}
-      <mesh castShadow position={[0, 0.3, 0]}>
-        <boxGeometry args={[1.5, 0.6, 3]} />
-        <meshLambertMaterial color="#ff4444" />
+      {/* Car Body - Enhanced with PBR materials */}
+      <mesh castShadow receiveShadow position={[0, 0.3, 0]}>
+        <boxGeometry args={[1.6, 0.7, 3.2]} />
+        <meshStandardMaterial 
+          color="#ff3333"
+          roughness={0.3}
+          metalness={0.6}
+          emissive="#ff0000"
+          emissiveIntensity={0.1}
+        />
       </mesh>
       
       {/* Car Roof */}
-      <mesh castShadow position={[0, 0.8, -0.3]}>
-        <boxGeometry args={[1.2, 0.4, 1.5]} />
-        <meshLambertMaterial color="#cc2222" />
+      <mesh castShadow receiveShadow position={[0, 0.85, -0.3]}>
+        <boxGeometry args={[1.3, 0.5, 1.6]} />
+        <meshStandardMaterial 
+          color="#dd2222"
+          roughness={0.2}
+          metalness={0.7}
+        />
       </mesh>
       
-      {/* Wheels */}
-      <mesh castShadow position={[-0.7, 0, 1]} rotation={[0, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[0.3, 0.3, 0.2, 8]} />
-        <meshLambertMaterial color="#333333" />
-      </mesh>
-      <mesh castShadow position={[0.7, 0, 1]} rotation={[0, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[0.3, 0.3, 0.2, 8]} />
-        <meshLambertMaterial color="#333333" />
-      </mesh>
-      <mesh castShadow position={[-0.7, 0, -1]} rotation={[0, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[0.3, 0.3, 0.2, 8]} />
-        <meshLambertMaterial color="#333333" />
-      </mesh>
-      <mesh castShadow position={[0.7, 0, -1]} rotation={[0, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[0.3, 0.3, 0.2, 8]} />
-        <meshLambertMaterial color="#333333" />
-      </mesh>
+      {/* Wheels - More detailed */}
+      {[
+        [-0.75, 0, 1.2],
+        [0.75, 0, 1.2],
+        [-0.75, 0, -1.2],
+        [0.75, 0, -1.2]
+      ].map((pos, i) => (
+        <group key={`wheel-${i}`} position={pos as [number, number, number]}>
+          {/* Tire */}
+          <mesh castShadow receiveShadow rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.35, 0.35, 0.3, 16]} />
+            <meshStandardMaterial 
+              color="#1a1a1a"
+              roughness={0.9}
+              metalness={0.1}
+            />
+          </mesh>
+          {/* Rim */}
+          <mesh rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.2, 0.2, 0.32, 16]} />
+            <meshStandardMaterial 
+              color="#cccccc"
+              roughness={0.2}
+              metalness={0.9}
+            />
+          </mesh>
+        </group>
+      ))}
       
       {/* Windshield */}
-      <mesh position={[0, 0.7, 0.8]}>
-        <planeGeometry args={[1.2, 0.4]} />
-        <meshLambertMaterial color="#4488ff" transparent opacity={0.3} />
+      <mesh position={[0, 0.8, 0.9]} rotation={[-0.2, 0, 0]}>
+        <planeGeometry args={[1.3, 0.5]} />
+        <meshStandardMaterial 
+          color="#88ccff"
+          transparent 
+          opacity={0.4}
+          roughness={0.1}
+          metalness={0.5}
+        />
+      </mesh>
+      
+      {/* Headlights */}
+      <mesh position={[-0.5, 0.4, 1.6]}>
+        <sphereGeometry args={[0.15, 16, 16]} />
+        <meshStandardMaterial 
+          color="#ffff88"
+          emissive="#ffff88"
+          emissiveIntensity={0.8}
+        />
+      </mesh>
+      <mesh position={[0.5, 0.4, 1.6]}>
+        <sphereGeometry args={[0.15, 16, 16]} />
+        <meshStandardMaterial 
+          color="#ffff88"
+          emissive="#ffff88"
+          emissiveIntensity={0.8}
+        />
+      </mesh>
+      
+      {/* Taillights */}
+      <mesh position={[-0.5, 0.4, -1.6]}>
+        <sphereGeometry args={[0.12, 16, 16]} />
+        <meshStandardMaterial 
+          color="#ff0000"
+          emissive="#ff0000"
+          emissiveIntensity={0.6}
+        />
+      </mesh>
+      <mesh position={[0.5, 0.4, -1.6]}>
+        <sphereGeometry args={[0.12, 16, 16]} />
+        <meshStandardMaterial 
+          color="#ff0000"
+          emissive="#ff0000"
+          emissiveIntensity={0.6}
+        />
       </mesh>
     </group>
   );
